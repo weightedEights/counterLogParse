@@ -9,6 +9,7 @@ Summary
 
 """
 
+import sys
 
 def main():
 
@@ -16,9 +17,10 @@ def main():
 
     funcVal = firstFunc(datArray)
 
-    secVal = secFunc(funcVal)
+    if len(sys.argv) > 1 and sys.argv[1] == '-s' and sys.argv[2]:
+        funcVal = secFunc(funcVal, sys.argv[2])
 
-    displayResult(secVal)
+    displayResult(funcVal)
 
 
 def loadprob(file):
@@ -33,9 +35,11 @@ def firstFunc(num):
     return num
 
 
-def secFunc(num):
+def secFunc(dat, add):
 
-    return num
+    dat += add
+
+    return dat
 
 
 def displayResult(data):
