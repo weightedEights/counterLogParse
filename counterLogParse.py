@@ -9,15 +9,15 @@ Summary
 
 """
 
-import sys
+import sys, getopt
 
-def main():
+def main(argv):
 
     datArray = loadprob("test.data.txt")
 
     funcVal = firstFunc(datArray)
 
-    if len(sys.argv) > 1 and sys.argv[1] == '-s' and sys.argv[2]:
+    if len(sys.argv) > 1 and sys.argv[1] == '-s' and sys.argv[2] == True:
         funcVal = secFunc(funcVal, sys.argv[2])
 
     displayResult(funcVal)
