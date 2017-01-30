@@ -9,44 +9,44 @@ Summary
 
 """
 
-import sys, getopt
+import sys, getopt, os
 
 def main(argv):
 
-    targetFileName = "cattedLog.csv"
+    cattedFilePath = os.getcwd()
+    cattedFileName = "cattedLog.csv"
 
-    datArray = loadprob("test.data.txt")
+    cattedFile = cattedFileSetup(cattedFileName, cattedFilePath)
 
-    funcVal = firstFunc(datArray)
+    cattedDatArray = loadLogs("test.data.txt")
+    writeCattedFile(cattedFile)
 
     if len(sys.argv) > 1 and sys.argv[1] == '-s' and sys.argv[2] == True:
         funcVal = secFunc(funcVal, sys.argv[2])
 
-    displayResult(funcVal)
+    plotCattedTrend(cattedDatArray)
 
 
-def loadprob(file):
+def cattedFileSetup(name, path):
+
+    return aFile
+
+
+def loadLogs(file):
     with open(file, 'r') as fin:
         parsedList = [s for s in fin.read()]
 
     return parsedList
 
 
-def firstFunc(num):
+def writeCattedFile(dat):
 
-    return num
-
-
-def secFunc(dat, add):
-
-    dat += add
-
-    return dat
+    pass
 
 
-def displayResult(data):
+def plotCattedTrend(data):
 
-    print(data)
+    pass
 
 
 if __name__ == main():
