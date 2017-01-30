@@ -13,6 +13,8 @@ import sys, getopt
 
 def main(argv):
 
+    targetFileName = "cattedLog.csv"
+
     datArray = loadprob("test.data.txt")
 
     funcVal = firstFunc(datArray)
