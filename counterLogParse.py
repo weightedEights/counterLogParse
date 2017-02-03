@@ -20,14 +20,19 @@ import argparse
 
 def main():
 
+    # these function groups will be contained within argparse statements, to control when they run
+
+    # create a directory for a new file, set generic file name, create a CSV file with an index and header
     cattedFilePath = os.getcwd()
     cattedFileName = "cattedLog"
-
     cattedFile = cattedFileSetup(cattedFileName, cattedFilePath)
 
+    # load data from argv logs, in date order, and write to the empty file created by cattedFileSetup
+    # will have to be careful to check that dates are consecutive
     cattedDatArray = loadLogs("test.data.txt")
     writeCattedFile(cattedFile)
 
+    # generate plot from either a catted log, or from an argv existing log
     plotCattedTrend(cattedDatArray)
 
 
@@ -64,7 +69,7 @@ def writeCattedFile(dat):
 
 def plotCattedTrend(data):
 
-    pass
+    print(data)
 
 
 if __name__ == main():
