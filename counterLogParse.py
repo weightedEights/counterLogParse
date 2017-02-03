@@ -11,7 +11,9 @@ plot (freq vs time).
 This script is also an exercise in parsing command line switches. For example, choosing to only concatenate logs without
 generating a plot. Or, generating a plot based on one log and not concatenating a range.
 
-Usage = counterLogParse.py [-h] [-p] [-r] <logFileRangeStart> <logFileRangeStop>
+Usage:
+
+counterLogParse.py [-h] [-p] [-r] <logFileRangeStart> <logFileRangeStop>
 
 [-h]
     Print this usage
@@ -23,6 +25,7 @@ Usage = counterLogParse.py [-h] [-p] [-r] <logFileRangeStart> <logFileRangeStop>
 """
 
 import sys, os, time
+from datetime import datetime
 import argparse
 
 def main():
@@ -36,11 +39,16 @@ def main():
 
     # load data from argv logs, in date order, and write to the empty file created by cattedFileSetup
     # will have to be careful to check that dates are consecutive
-    cattedDatArray = loadLogs("test.data.txt")
+    # time formatting: "%Y-%m-%d %H:%M:%S.%f"
+    singleDatArray = loadLogSingle("test.data.txt")
+
+    cattedDatArray = loadLogRange("testLog.20161219.001", "testLog.2016.1220.001")
+    print(cattedDatArray)
+
     # writeCattedFile(cattedFile)
 
     # generate plot from either a catted log, or from an argv existing log
-    plotCattedTrend(cattedDatArray)
+    plotCattedTrend(singleDatArray)
 
 
 def cattedFileSetup(name, path):
@@ -62,7 +70,7 @@ def cattedFileSetup(name, path):
     return logFile
 
 
-def loadLogs(file):
+def loadLogSingle(file):
     with open(file, 'r') as fin:
         # ignore the first row which is the header
         # return a list of lists, (time string, measurement string)
@@ -70,9 +78,18 @@ def loadLogs(file):
     # convert measurement element to float
     parsedList = [[n[0], float(n[1])] for n in parsedList]
 
-    print(parsedList)
-
     return parsedList
+
+
+def loadLogRange(startFile, endFile):
+    # first create a list of files to open
+    fileList = []
+
+
+    # do the loadSingleFile function. if first file, create new data list. if not first file, append data list by
+    # comparing the date.
+
+    return fileList
 
 
 def writeCattedFile(dat):
