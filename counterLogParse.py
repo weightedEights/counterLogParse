@@ -17,14 +17,14 @@ counterLogParse.py [-h] [-p] [-r] <logFileRangeStart> <logFileRangeStop>
 
 [-h]
     Print this usage
-[-p] <logFIle>
+[-p] <logFile>
     Generate plot, requires either log file or..
-[-r] <logFileRange> <logFileRange>
-    Concatenate a range of log files into one, new log file. Can be used as the source data to plot.
+[-r] <logFile1> <logFile2> <logFile#>
+    Concatenate a list of log files into one, new log file. New file can be used as the source data to plot.
 
 """
 
-import sys, os, time
+import sys, os, fileinput
 from datetime import datetime
 import argparse
 
@@ -42,8 +42,7 @@ def main():
     # time formatting: "%Y-%m-%d %H:%M:%S.%f"
     singleDatArray = loadLogSingle("test.data.txt")
 
-    cattedDatArray = loadLogRange("testLog.20161219.001", "testLog.2016.1220.001")
-    print(cattedDatArray)
+    cattedDatArray = loadLogList(["testLog.20161219.002.csv", "testLog.20161220.001.csv", "testLog.20161219.001.csv"])
 
     # writeCattedFile(cattedFile)
 
@@ -71,6 +70,7 @@ def cattedFileSetup(name, path):
 
 
 def loadLogSingle(file):
+
     with open(file, 'r') as fin:
         # ignore the first row which is the header
         # return a list of lists, (time string, measurement string)
@@ -81,15 +81,12 @@ def loadLogSingle(file):
     return parsedList
 
 
-def loadLogRange(startFile, endFile):
-    # first create a list of files to open
-    fileList = []
+def loadLogList(fileList):
 
+    dataList = [s.rstrip().split(',') for s in fileinput.input(fileList) if not fileinput.isfirstline()]
+    sortedList = sorted(dataList)
 
-    # do the loadSingleFile function. if first file, create new data list. if not first file, append data list by
-    # comparing the date.
-
-    return fileList
+    return sortedList
 
 
 def writeCattedFile(dat):
