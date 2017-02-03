@@ -65,9 +65,10 @@ def cattedFileSetup(name, path):
 def loadLogs(file):
     with open(file, 'r') as fin:
         # ignore the first row which is the header
-        # return a list of lists, (time string, float)
+        # return a list of lists, (time string, measurement string)
         parsedList = [s.rstrip().split(',') for s in fin.readlines()][1:]
-        parsedList = [[n[0], float(n[1])] for n in parsedList]
+    # convert measurement element to float
+    parsedList = [[n[0], float(n[1])] for n in parsedList]
 
     print(parsedList)
 
