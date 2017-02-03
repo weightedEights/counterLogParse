@@ -15,13 +15,13 @@ Usage = counterLogParse.py [-h] [-p] [-r] <logFileRangeStart> <logFileRangeEnd>
 
 """
 
-import sys, os
+import sys, os, time
 import argparse
 
-def main(argv):
+def main():
 
     cattedFilePath = os.getcwd()
-    cattedFileName = "cattedLog.csv"
+    cattedFileName = "cattedLog"
 
     cattedFile = cattedFileSetup(cattedFileName, cattedFilePath)
 
@@ -30,30 +30,24 @@ def main(argv):
 
     plotCattedTrend(cattedDatArray)
 
-    inputFile = ''
-    outputFile = ''
-    try:
-        opts, args = getopt.getopt(argv, "hi:o:", ["inFile=", "outFile="])
-
-    except getopt.GetoptError:
-        print("USAGE")
-        sys.exit(2)
-
-    for opt, arg in opts:
-        if opt == '-h':
-            print("USAGE")
-            sys.exit()
-
-        elif opt in ("-i", "--inFile"):
-            inputFile = arg
-
-        elif opt in ("-o", "--outFile"):
-            outputFile = arg
-
 
 def cattedFileSetup(name, path):
 
-    return aFile
+    logFilePath = os.path.join(path, "cattedLogs")
+    if not os.path.exists(logFilePath):
+        os.mkdir(logFilePath)
+
+    ind = 1
+    logFile = os.path.join(logFilePath, "{}.{:03d}.csv".format(name, ind))
+
+    while os.path.exists(logFile):
+        ind += 1
+        logFile = os.path.join(logFilePath, "{}.{:03d}.csv".format(name, ind))
+
+    with open(logFile, "w") as log:
+        log.write("Time, CounterData\n")
+
+    return logFile
 
 
 def loadLogs(file):
