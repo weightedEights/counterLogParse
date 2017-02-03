@@ -33,21 +33,27 @@ def main():
     # these function groups will be contained within argparse statements, to control when they run
 
     # create a directory for a new file, set generic file name, create a CSV file with an index and header
+    """ option [-r] """
     # cattedFilePath = os.getcwd()
     # cattedFileName = "cattedLog"
     # cattedFile = cattedFileSetup(cattedFileName, cattedFilePath)
 
-    # load data from argv logs, in date order, and write to the empty file created by cattedFileSetup
-    # will have to be careful to check that dates are consecutive
+    # load data from argv logs, either a single file or a list doesnt matter
     # time formatting: "%Y-%m-%d %H:%M:%S.%f"
-    singleDatArray = loadLogSingle("test.data.txt")
+    singleFile = "test.data.txt"
+    fileList = ["testLog.20161219.002.csv", "testLog.20161220.001.csv", "testLog.20161219.001.csv"]
 
-    cattedDatArray = loadLogList(["testLog.20161219.002.csv", "testLog.20161220.001.csv", "testLog.20161219.001.csv"])
+    cattedDatArray = loadLogList(fileList)
+    for e in cattedDatArray:
+        print(e)
 
-    # writeCattedFile(cattedFile)
+    # writeCattedFile(cattedDatArray, cattedFile)
+    """ end option [-r] """
 
+    """ option [-p] """
     # generate plot from either a catted log, or from an argv existing log
-    plotCattedTrend(singleDatArray)
+    plotCattedTrend(cattedDatArray)
+    """ end option [-p] """
 
 
 def cattedFileSetup(name, path):
@@ -69,18 +75,6 @@ def cattedFileSetup(name, path):
     return logFile
 
 
-def loadLogSingle(file):
-
-    with open(file, 'r') as fin:
-        # ignore the first row which is the header
-        # return a list of lists, (time string, measurement string)
-        parsedList = [s.rstrip().split(',') for s in fin.readlines()][1:]
-    # convert measurement element to float
-    parsedList = [[n[0], float(n[1])] for n in parsedList]
-
-    return parsedList
-
-
 def loadLogList(fileList):
 
     dataList = [s.rstrip().split(',') for s in fileinput.input(fileList) if not fileinput.isfirstline()]
@@ -89,7 +83,7 @@ def loadLogList(fileList):
     return sortedList
 
 
-def writeCattedFile(dat):
+def writeCattedFile(data, name):
 
     pass
 
