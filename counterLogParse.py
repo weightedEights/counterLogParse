@@ -11,7 +11,14 @@ plot (freq vs time).
 This script is also an exercise in parsing command line switches. For example, choosing to only concatenate logs without
 generating a plot. Or, generating a plot based on one log and not concatenating a range.
 
-Usage = counterLogParse.py [-h] [-p] [-r] <logFileRangeStart> <logFileRangeEnd>
+Usage = counterLogParse.py [-h] [-p] [-r] <logFileRangeStart> <logFileRangeStop>
+
+[-h]
+    Print this usage
+[-p] <logFIle>
+    Generate plot, requires either log file or..
+[-r] <logFileRange> <logFileRange>
+    Concatenate a range of log files into one, new log file. Can be used as the source data to plot.
 
 """
 
@@ -23,14 +30,14 @@ def main():
     # these function groups will be contained within argparse statements, to control when they run
 
     # create a directory for a new file, set generic file name, create a CSV file with an index and header
-    cattedFilePath = os.getcwd()
-    cattedFileName = "cattedLog"
-    cattedFile = cattedFileSetup(cattedFileName, cattedFilePath)
+    # cattedFilePath = os.getcwd()
+    # cattedFileName = "cattedLog"
+    # cattedFile = cattedFileSetup(cattedFileName, cattedFilePath)
 
     # load data from argv logs, in date order, and write to the empty file created by cattedFileSetup
     # will have to be careful to check that dates are consecutive
     cattedDatArray = loadLogs("test.data.txt")
-    writeCattedFile(cattedFile)
+    # writeCattedFile(cattedFile)
 
     # generate plot from either a catted log, or from an argv existing log
     plotCattedTrend(cattedDatArray)
@@ -57,7 +64,12 @@ def cattedFileSetup(name, path):
 
 def loadLogs(file):
     with open(file, 'r') as fin:
-        parsedList = [s for s in fin.read()]
+        # ignore the first row which is the header
+        # return a list of lists, (time string, float)
+        parsedList = [s.rstrip().split(',') for s in fin.readlines()][1:]
+        parsedList = [[n[0], float(n[1])] for n in parsedList]
+
+    print(parsedList)
 
     return parsedList
 
@@ -69,7 +81,7 @@ def writeCattedFile(dat):
 
 def plotCattedTrend(data):
 
-    print(data)
+    pass
 
 
 if __name__ == main():
