@@ -15,7 +15,8 @@ Usage = counterLogParse.py [-h] [-p] [-r] <logFileRangeStart> <logFileRangeEnd>
 
 """
 
-import sys, getopt, os
+import sys, os
+import argparse
 
 def main(argv):
 
