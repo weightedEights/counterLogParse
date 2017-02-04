@@ -34,9 +34,9 @@ def main():
 
     # create a directory for a new file, set generic file name, create a CSV file with an index and header
     """ option [-r] """
-    # cattedFilePath = os.getcwd()
-    # cattedFileName = "cattedLog"
-    # cattedFile = cattedFileSetup(cattedFileName, cattedFilePath)
+    cattedFilePath = os.getcwd()
+    cattedFileName = "cattedLog"
+    cattedFile = cattedFileSetup(cattedFileName, cattedFilePath)
 
     # load data from argv logs, either a single file or a list doesnt matter
     # time formatting: "%Y-%m-%d %H:%M:%S.%f"
@@ -44,10 +44,8 @@ def main():
     fileList = ["testLog.20161219.002.csv", "testLog.20161220.001.csv", "testLog.20161219.001.csv"]
 
     cattedDatArray = loadLogList(fileList)
-    for e in cattedDatArray:
-        print(e)
 
-    # writeCattedFile(cattedDatArray, cattedFile)
+    writeCattedFile(cattedDatArray, cattedFile)
     """ end option [-r] """
 
     """ option [-p] """
@@ -85,7 +83,9 @@ def loadLogList(fileList):
 
 def writeCattedFile(data, name):
 
-    pass
+    with open(name, 'a') as log:
+        for line in data:
+            log.write(str(line[0]) + "," + str(line[1]) + "\n")
 
 
 def plotCattedTrend(data):
