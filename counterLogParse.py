@@ -24,33 +24,34 @@ counterLogParse.py [-h] [-p] [-r] <logFileRangeStart> <logFileRangeStop>
 
 """
 
-import sys, os, fileinput
-from datetime import datetime
-import argparse
+import os, fileinput, argparse
+from datetime import datetime, timedelta
+from pylab import savefig as sf
+import matplotlib.pyplot as plt
+import matplotlib.mlab as mlab
+import numpy as np
 
 def main():
-
+    """ argparse begin"""
     # these function groups will be contained within argparse statements, to control when they run
 
-    # create a directory for a new file, set generic file name, create a CSV file with an index and header
     """ option [-r] """
-    cattedFilePath = os.getcwd()
-    cattedFileName = "cattedLog"
-    cattedFile = cattedFileSetup(cattedFileName, cattedFilePath)
+    # create a directory for a new file, set generic file name, create a CSV file with an index and header
+    # cattedFilePath = os.getcwd()
+    # cattedFileName = "cattedLog"
+    # cattedFile = cattedFileSetup(cattedFileName, cattedFilePath)
 
     # load data from argv logs, either a single file or a list doesnt matter
-    # time formatting: "%Y-%m-%d %H:%M:%S.%f"
     singleFile = "test.data.txt"
     fileList = ["testLog.20161219.002.csv", "testLog.20161220.001.csv", "testLog.20161219.001.csv"]
-
     cattedDatArray = loadLogList(fileList)
-
-    writeCattedFile(cattedDatArray, cattedFile)
+    # writeCattedFile(cattedDatArray, cattedFile)
     """ end option [-r] """
 
     """ option [-p] """
     # generate plot from either a catted log, or from an argv existing log
-    plotCattedTrend(cattedDatArray)
+    buildPlotCattedTrend(cattedDatArray)
+    showPlot()
     """ end option [-p] """
 
 
@@ -88,7 +89,33 @@ def writeCattedFile(data, name):
             log.write(str(line[0]) + "," + str(line[1]) + "\n")
 
 
-def plotCattedTrend(data):
+def buildPlotCattedTrend(data):
+
+    # generate list of dates represented
+    dateList = []
+    for n in data:
+        if n[0].split(" ")[0] not in dateList:
+            dateList.append(n[0].split(" ")[0])
+
+    # convert data list to numpy array with datetime objects
+    timeFormat = "%Y-%m-%d %H:%M:%S.%f"
+    numData = [[datetime.strptime(n[0], timeFormat), float(n[1])] for n in data]
+    datArray = np.array(numData)
+
+    # shift Y values by 10MHz, to only plot mHz centered around zero
+    datArray[:,1] -= 10000000
+
+    xVals = [datArray[:,0]]
+    yVals = [datArray[:,1]]
+
+    plt.figure()
+    plt.subplot(1, 1, 1)
+    plt.plot(xVals, yVals, 'b-')
+
+    plt.show()
+
+
+def showPlot():
 
     pass
 
