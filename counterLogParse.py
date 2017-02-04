@@ -110,7 +110,7 @@ def buildPlotCattedTrend(data):
 
     plt.figure()
     plt.subplot(1, 1, 1)
-    plt.plot(xVals, yVals, 'b-')
+    plt.scatter(xVals, yVals)
 
     plt.show()
 
