@@ -29,6 +29,7 @@ from datetime import datetime, timedelta
 from pylab import savefig as sf
 import matplotlib.pyplot as plt
 import matplotlib.mlab as mlab
+import matplotlib.dates as mdates
 import numpy as np
 
 def main():
@@ -105,12 +106,28 @@ def buildPlotCattedTrend(data):
     # shift Y values by 10MHz, to only plot mHz centered around zero
     datArray[:,1] -= 10000000
 
-    xVals = [datArray[:,0]]
-    yVals = [datArray[:,1]]
+    xVals = [mdates.date2num(dt) for dt in datArray[:,0]]
+    # xVals = datArray[:,0]
+    yVals = datArray[:,1]
+    # xLims = [min(datArray[:,0]) - timedelta(hours=1), max(datArray[:,0]) + timedelta(hours=1)]
+    yLims = [min(yVals) * 2, max(yVals) * 2]
+
+    print(mdates.date2num(datArray[:,0]))
+
+    # for plot date formatting, reference: http://matplotlib.org/examples/api/date_demo.html
 
     plt.figure()
     plt.subplot(1, 1, 1)
-    plt.scatter(xVals, yVals)
+    plt.scatter(xVals, yVals, color='b', alpha=0.5, marker='s', s=20)
+    plt.gcf().autofmt_xdate()
+
+    plt.xlabel('x label')
+    plt.ylabel('y label')
+    # plt.xlim(xLims)
+    plt.ylim(yLims)
+
+    # the problem with the plot is that for each individual log file the times are close together, but this creates
+    # a discontinuity at the boundary between them
 
     plt.show()
 
