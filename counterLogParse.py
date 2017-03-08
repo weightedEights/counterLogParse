@@ -50,7 +50,7 @@ def main():
     """ end option [-r] """
 
     """ option [-p] """
-    # generate plot from either a catted log, or from an argv existing log
+    # generate plot or plots from either a catted log, or from an argv existing log
     buildPlotCattedTrend(cattedDatArray)
     showPlot()
     """ end option [-p] """
@@ -92,47 +92,64 @@ def writeCattedFile(data, name):
 
 def buildPlotCattedTrend(data):
 
-    # generate list of dates represented
-    dateList = []
-    for n in data:
-        if n[0].split(" ")[0] not in dateList:
-            dateList.append(n[0].split(" ")[0])
-
     # convert data list to numpy array with datetime objects
     timeFormat = "%Y-%m-%d %H:%M:%S.%f"
     numData = [[datetime.strptime(n[0], timeFormat), float(n[1])] for n in data]
     datArray = np.array(numData)
 
-    # plotting individual log files creates discontinuities between x vals, so "punctuated" linear scale is necessary
-    # expand x-values to a 3-element array: [YYYYMMDD, HHMM, SS]. the SS elements will become the plotted values, the
-    # HHMM for minor ticks, and the YYYYMMDD for major ticks
+    # plotting individual log files creates discontinuities between x vals, so create one subplot per calendar day
+    # x-values contain date elements: (YYYY, MM, DD, HH, MM, SS, uS). the SS elements will become the plotted values,
+    # the HHMM for x-axis ticks, and the YYYYMMDD for the plot title
 
-    print([[dt.hour, dt.second] for dt in datArray[:,0]])
+    # first define yVals, which will have the same range across all plots
+    yVals = datArray[:, 1]
+    yLims = [min(yVals) * 2, max(yVals) * 2]
+
+    print(datArray)
+
+    # create list of calendar days represented
+    dayFormat = "%Y%m%d"
+    daysInDat = sorted(list(set([dt.strftime(dayFormat) for dt in datArray[:,0]])))
+    print(daysInDat)
+
+    # x-axis should be 24 ticks for one whole day
+    hourFormat = "%H%M"
+    xTicks = [dt.strftime(hourFormat) for dt in datArray[:,0]]
+    print(xTicks)
 
     # shift Y values by 10MHz, to only plot mHz centered around zero
     datArray[:,1] -= 10000000
 
-    xVals = [mdates.date2num(dt) for dt in datArray[:,0]]
-    # xVals = datArray[:,0]
-    yVals = datArray[:,1]
+    xVals = [dt.second for dt in datArray[:,0]]
     # xLims = [min(datArray[:,0]) - timedelta(hours=1), max(datArray[:,0]) + timedelta(hours=1)]
-    yLims = [min(yVals) * 2, max(yVals) * 2]
 
     # print(mdates.date2num(datArray[:,0]))
 
     # for plot date formatting, reference: http://matplotlib.org/examples/api/date_demo.html
 
     plt.figure()
-    plt.subplot(1, 1, 1)
+    # first subplot gets the y-axis label
+    plt.subplot(1, 2, 1)
+    plt.ylabel('Deviation from 10MHz [Hz]')
     plt.scatter(xVals, yVals, color='b', alpha=0.5, marker='s', s=20)
     plt.gcf().autofmt_xdate()
 
-    plt.xlabel('x label')
-    plt.ylabel('y label')
+    # x-axis label will be the date
+    plt.xlabel(str(daysInDat[0]))
+
+    plt.subplot(1, 2, 2)
+    plt.scatter(xVals, yVals, color='b', alpha=0.5, marker='s', s=20)
+    plt.gcf().autofmt_xdate()
+
+    # x-axis label will be the date
+    plt.xlabel(str(daysInDat[1]))
+
+
+
     # plt.xlim(xLims)
     plt.ylim(yLims)
 
-    # plt.show()
+    plt.show()
 
 
 def showPlot():
