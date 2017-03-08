@@ -103,6 +103,12 @@ def buildPlotCattedTrend(data):
     numData = [[datetime.strptime(n[0], timeFormat), float(n[1])] for n in data]
     datArray = np.array(numData)
 
+    # plotting individual log files creates discontinuities between x vals, so "punctuated" linear scale is necessary
+    # expand x-values to a 3-element array: [YYYYMMDD, HHMM, SS]. the SS elements will become the plotted values, the
+    # HHMM for minor ticks, and the YYYYMMDD for major ticks
+
+    print([[dt.hour, dt.second] for dt in datArray[:,0]])
+
     # shift Y values by 10MHz, to only plot mHz centered around zero
     datArray[:,1] -= 10000000
 
@@ -112,7 +118,7 @@ def buildPlotCattedTrend(data):
     # xLims = [min(datArray[:,0]) - timedelta(hours=1), max(datArray[:,0]) + timedelta(hours=1)]
     yLims = [min(yVals) * 2, max(yVals) * 2]
 
-    print(mdates.date2num(datArray[:,0]))
+    # print(mdates.date2num(datArray[:,0]))
 
     # for plot date formatting, reference: http://matplotlib.org/examples/api/date_demo.html
 
@@ -126,10 +132,7 @@ def buildPlotCattedTrend(data):
     # plt.xlim(xLims)
     plt.ylim(yLims)
 
-    # the problem with the plot is that for each individual log file the times are close together, but this creates
-    # a discontinuity at the boundary between them
-
-    plt.show()
+    # plt.show()
 
 
 def showPlot():
