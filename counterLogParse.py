@@ -51,8 +51,8 @@ def main():
 
     """ option [-p] """
     # generate plot or plots from either a catted log, or from an argv existing log
-    buildPlotCattedTrend(cattedDatArray)
-    showPlot()
+    # buildPlotCattedTrend(cattedDatArray)
+    # showPlot()
     """ end option [-p] """
 
 
