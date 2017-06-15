@@ -24,7 +24,7 @@ counterLogParse.py [-h] [-p] [-r] <logFileRangeStart> <logFileRangeStop>
 
 """
 
-import os, fileinput, argparse
+import os, fileinput, argparse, sys
 from datetime import datetime, timedelta
 from pylab import savefig as sf
 import matplotlib.pyplot as plt
@@ -158,4 +158,4 @@ def showPlot():
 
 
 if __name__ == main():
-    main()
+    main(sys.argv[1:])
