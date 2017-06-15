@@ -43,9 +43,18 @@ def main():
     # cattedFile = cattedFileSetup(cattedFileName, cattedFilePath)
 
     # load data from argv logs, either a single file or a list doesnt matter
-    singleFile = "test.data.txt"
-    fileList = ["testLog.20161219.002.csv", "testLog.20161220.001.csv", "testLog.20161219.001.csv"]
-    cattedDatArray = loadLogList(fileList)
+    # logpath will eventually just be assumed to be root, but can be specified via argv switch
+    logPath = os.getcwd() + "\logs.rotatingFormat"
+
+    # file list must have specific argument, or ask "are you sure" before pulling in whole directory
+    # also, in future include a printed list of what files are about ot be  processed with a y/n dialog
+    monthArg = '05'
+    fileList = [x for x in os.listdir(logPath) if x[-5:-3] == monthArg]
+
+    # load just the data from the file list into one, large array
+    # this should end up as a generator function, passing values to the file i/o or plotter
+    cattedDatArray = loadFileListData(logPath, fileList)
+
     # writeCattedFile(cattedDatArray, cattedFile)
     """ end option [-r] """
 
@@ -75,12 +84,14 @@ def cattedFileSetup(name, path):
     return logFile
 
 
-def loadLogList(fileList):
+def loadFileListData(path, fileList):
 
-    dataList = [s.rstrip().split(',') for s in fileinput.input(fileList) if not fileinput.isfirstline()]
-    sortedList = sorted(dataList)
+    fileNameList = [os.path.join(path, x) for x in fileList]
 
-    return sortedList
+    # skips the first line of the csv, builds a list (date,data) tuples, then returns list sorted by datetime
+    dataList = [s.rstrip().split(',') for s in fileinput.input(fileNameList) if not fileinput.isfirstline()]
+
+    return sorted(dataList)
 
 
 def writeCattedFile(data, name):
@@ -158,4 +169,5 @@ def showPlot():
 
 
 if __name__ == main():
-    main(sys.argv[1:])
+    # main(sys.argv[1:])
+    main()
