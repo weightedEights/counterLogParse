@@ -25,6 +25,7 @@ counterLogParse.py [-h] [-p] [-r] <logFileRangeStart> <logFileRangeStop>
 """
 
 import os, argparse, sys
+import numpy as np
 from datetime import datetime
 
 __appname__ = "counterLogParse.py"
@@ -58,7 +59,12 @@ def cat_logs(arg):
         print("Log file found. Reading..")
         with open(full_log_path) as fin:
             for line in fin.readlines():
-                print(line.rstrip())
+                # print(line.rstrip())
+                pass
+
+    data_array = np.genfromtxt(full_log_path, dtype=None, delimiter=',')
+    # print(np.mean(data_array, axis=0))
+    # to do the np.mean() i need a homogeneous array first, instead of [string, int]
 
 
 def get_arguments():
