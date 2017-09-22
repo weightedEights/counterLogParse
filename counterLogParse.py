@@ -24,6 +24,9 @@ counterLogParse.py [-h] [-p] [-r] <logFileRangeStart> <logFileRangeStop>
 
 """
 
+import os, argparse, sys
+from datetime import datetime
+
 __appname__ = "counterLogParse.py"
 __author__ = "J.Arndt, Sondrestrom Radar"
 __version__ = "v0.1, 22Sep2017"
@@ -31,30 +34,38 @@ __doc__ = "Counter Logger Log File Utilities"
 
 PATH_TO_LOGS = "./logs.rotatingFormat"
 
-import os, argparse, sys
-from datetime import datetime
 
-
-def main(args):
+def main(pargs):
     """ docstring description """
 
-    if args.version:
+    if pargs.version:
         print(__version__)
 
-    if args.cat_logs:
-        print("Cat logs arg detector.", "Contains: {}".format(args.cat_logs))
+    if pargs.cat_logs:
         cat_logs(args.cat_logs)
 
 
 def cat_logs(arg):
-    print("Cat logs function. Contains: {}".format(arg))
+    # print("Cat logs function. Contains: {}".format(arg))
+    full_log_path = os.path.join(PATH_TO_LOGS, arg)
+
+    # first check if path exists
+    if not os.path.exists(PATH_TO_LOGS):
+        raise Exception('ERROR: cat_logs: incorrect path')
+
+    # check if the log file exists
+    if os.path.exists(full_log_path) and os.path.isfile(full_log_path):
+        print("Log file found. Reading..")
+        with open(full_log_path) as fin:
+            for line in fin.readlines():
+                print(line.rstrip())
 
 
 def get_arguments():
     parser = argparse.ArgumentParser(description=__doc__)
 
     parser.add_argument('-v', '--version', action='store_true', help='Print version')
-    parser.add_argument('-c', '--concatenate', action='store', dest='cat_logs', help='Print version')
+    parser.add_argument('-c', '--concatenate', action='store', dest='cat_logs', help='Pass arg after -c switch.')
 
     return parser.parse_args()
 
