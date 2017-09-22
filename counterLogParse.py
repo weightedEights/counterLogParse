@@ -65,6 +65,7 @@ def cat_logs(arg):
     data_array = np.genfromtxt(full_log_path, dtype=None, delimiter=',')
     # print(np.mean(data_array, axis=0))
     # to do the np.mean() i need a homogeneous array first, instead of [string, int]
+    print(data_array)
 
 
 def get_arguments():
