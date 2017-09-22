@@ -24,16 +24,45 @@ counterLogParse.py [-h] [-p] [-r] <logFileRangeStart> <logFileRangeStop>
 
 """
 
-import os, fileinput, argparse, sys
+__appname__ = "counterLogParse.py"
+__author__ = "J.Arndt, Sondrestrom Radar"
+__version__ = "v0.1, 22Sep2017"
+__doc__ = "Counter Logger Log File Utilities"
+
+PATH_TO_LOGS = "./logs.rotatingFormat"
+
+import os, argparse, sys
 from datetime import datetime
-import numpy as np
 
 
-def main():
-    """ argparse begin"""
+def main(args):
+    """ docstring description """
 
-    pass
+    if args.version:
+        print(__version__)
+
+    if args.cat_logs:
+        print("Cat logs arg detector.", "Contains: {}".format(args.cat_logs))
+        cat_logs(args.cat_logs)
 
 
-if __name__ == main():
-    main()
+def cat_logs(arg):
+    print("Cat logs function. Contains: {}".format(arg))
+
+
+def get_arguments():
+    parser = argparse.ArgumentParser(description=__doc__)
+
+    parser.add_argument('-v', '--version', action='store_true', help='Print version')
+    parser.add_argument('-c', '--concatenate', action='store', dest='cat_logs', help='Print version')
+
+    return parser.parse_args()
+
+
+if __name__ == '__main__':
+    try:
+        args = get_arguments()
+        main(args)
+
+    except KeyboardInterrupt as e:
+        sys.exit(0)
