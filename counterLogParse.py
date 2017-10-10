@@ -24,7 +24,9 @@ counterLogParse.py [-h] [-p] [-r] <logFileRangeStart> <logFileRangeStop>
 
 """
 
-import os, argparse, sys
+import os
+import argparse
+import sys
 import numpy as np
 from datetime import datetime
 
@@ -47,25 +49,23 @@ def main(pargs):
 
 
 def cat_logs(arg):
-    # print("Cat logs function. Contains: {}".format(arg))
-    full_log_path = os.path.join(PATH_TO_LOGS, arg)
-
     # first check if path exists
     if not os.path.exists(PATH_TO_LOGS):
         raise Exception('ERROR: cat_logs: incorrect path')
 
+    # print("Cat logs function. Contains: {}".format(arg))
+    full_log_path = os.path.join(PATH_TO_LOGS, arg)
+
     # check if the log file exists
     if os.path.exists(full_log_path) and os.path.isfile(full_log_path):
-        print("Log file found. Reading..")
-        with open(full_log_path) as fin:
-            for line in fin.readlines():
-                # print(line.rstrip())
-                pass
+        print("Log file found. Reading...")
+        # create a new array from just the measurement column
+        data_array = np.genfromtxt(full_log_path, skip_header=0, delimiter=',', usecols=1)
+        data_mean = np.mean(data_array, dtype=np.float64)
+        print("Average value for file {} is: {}".format(arg, data_mean))
 
-    data_array = np.genfromtxt(full_log_path, dtype=None, delimiter=',')
-    # print(np.mean(data_array, axis=0))
-    # to do the np.mean() i need a homogeneous array first, instead of [string, int]
-    print(data_array)
+    else:
+        raise Exception('ERROR: cat_logs: log file not found')
 
 
 def get_arguments():
