@@ -15,12 +15,7 @@ Usage:
 
 counterLogParse.py [-h] [-p] [-r] <logFileRangeStart> <logFileRangeStop>
 
-[-h]
-    Print this usage
-[-p] <logFile>
-    Generate plot, requires either log file or..
-[-r] <logFile1> <logFile2> <logFile#>
-    Concatenate a list of log files into one, new log file. New file can be used as the source data to plot.
+SCOPE UNDER REVISION
 
 """
 
@@ -59,17 +54,19 @@ def cat_logs(arg):
     if not os.path.exists(PATH_TO_LOGS):
         raise Exception('ERROR: cat_logs: incorrect path')
 
-    # print("Cat logs function. Contains: {}".format(arg))
     full_log_path = os.path.join(PATH_TO_LOGS, arg)
 
-    # check if the log file exists
-    if os.path.exists(full_log_path) and os.path.isfile(full_log_path):
-        print("Log file found. Reading...")
-        log_file_mean = get_log_file_mean(full_log_path)
-        print("Average value for file {} is: {}".format(arg, log_file_mean))
-
-    else:
+    # then check if the log file exists
+    if not os.path.exists(full_log_path) and not os.path.isfile(full_log_path):
         raise Exception('ERROR: cat_logs: log file not found')
+
+    print("Log file found. Reading...")
+
+    # calculate the mean value for the whole log
+    log_file_mean = get_log_file_mean(full_log_path)
+    print("Average value for file {} is: {}".format(arg, log_file_mean))
+
+    # get the date for the file
 
 
 def get_arguments():
