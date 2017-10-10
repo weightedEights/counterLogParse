@@ -66,7 +66,7 @@ def cat_logs(arg):
     log_file_mean = get_log_file_mean(full_log_path)
     print("Average value for file {} is: {}".format(arg, log_file_mean))
 
-    # get the date for the file
+    # get the date for the file. utcnow() format is '%Y-%m-%d %H:%M:%S.%f'
 
 
 def get_arguments():
