@@ -26,10 +26,9 @@ counterLogParse.py [-h] [-p] [-r] <logFileRangeStart> <logFileRangeStop>
 
 import os, fileinput, argparse, sys
 from datetime import datetime, timedelta
-from pylab import savefig as sf
+import pandas as pd
 import matplotlib.pyplot as plt
-import matplotlib.mlab as mlab
-import matplotlib.dates as mdates
+import seaborn as sns
 import numpy as np
 
 def main():
