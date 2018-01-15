@@ -15,158 +15,73 @@ Usage:
 
 counterLogParse.py [-h] [-p] [-r] <logFileRangeStart> <logFileRangeStop>
 
-[-h]
-    Print this usage
-[-p] <logFile>
-    Generate plot, requires either log file or..
-[-r] <logFile1> <logFile2> <logFile#>
-    Concatenate a list of log files into one, new log file. New file can be used as the source data to plot.
+SCOPE UNDER REVISION
 
 """
 
-import os, fileinput, argparse, sys
-from datetime import datetime, timedelta
-import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn as sns
+import os
+import argparse
+import sys
 import numpy as np
+from datetime import datetime
 
-def main():
-    """ argparse begin"""
-    # these function groups will be contained within argparse statements, to control when they run
+__appname__ = "counterLogParse.py"
+__author__ = "J.Arndt, Sondrestrom Radar"
+__version__ = "v0.1, 22Sep2017"
+__doc__ = "Counter Logger Log File Utilities"
 
-    """ option [-r] """
-    # create a directory for a new file, set generic file name, create a CSV file with an index and header
-    # cattedFilePath = os.getcwd()
-    # cattedFileName = "cattedLog"
-    # cattedFile = cattedFileSetup(cattedFileName, cattedFilePath)
-
-    # load data from argv logs, either a single file or a list doesnt matter
-    # logpath will eventually just be assumed to be root, but can be specified via argv switch
-    logPath = os.getcwd() + "\logs.rotatingFormat"
-
-    # file list must have specific argument, or ask "are you sure" before pulling in whole directory
-    # also, in future include a printed list of what files are about ot be  processed with a y/n dialog
-    monthArg = '05'
-    fileList = [x for x in os.listdir(logPath) if x[-5:-3] == monthArg]
-
-    # load just the data from the file list into one, large array
-    # this should end up as a generator function, passing values to the file i/o or plotter
-    cattedDatArray = loadFileListData(logPath, fileList)
-
-    # writeCattedFile(cattedDatArray, cattedFile)
-    """ end option [-r] """
-
-    """ option [-p] """
-    # generate plot or plots from either a catted log, or from an argv existing log
-    # buildPlotCattedTrend(cattedDatArray)
-    # showPlot()
-    """ end option [-p] """
+PATH_TO_LOGS = "./logs.rotatingFormat"
 
 
-def cattedFileSetup(name, path):
+def main(pargs):
+    """ docstring description """
 
-    logFilePath = os.path.join(path, "cattedLogs")
-    if not os.path.exists(logFilePath):
-        os.mkdir(logFilePath)
+    if pargs.version:
+        print(__version__)
 
-    ind = 1
-    logFile = os.path.join(logFilePath, "{}.{:03d}.csv".format(name, ind))
-
-    while os.path.exists(logFile):
-        ind += 1
-        logFile = os.path.join(logFilePath, "{}.{:03d}.csv".format(name, ind))
-
-    with open(logFile, "w") as log:
-        log.write("Time, CounterData\n")
-
-    return logFile
+    if pargs.cat_logs:
+        cat_logs(args.cat_logs)
 
 
-def loadFileListData(path, fileList):
-
-    fileNameList = [os.path.join(path, x) for x in fileList]
-
-    # skips the first line of the csv, builds a list (date,data) tuples, then returns list sorted by datetime
-    dataList = [s.rstrip().split(',') for s in fileinput.input(fileNameList) if not fileinput.isfirstline()]
-
-    return sorted(dataList)
+def get_log_file_mean(log_file):
+    data_array = np.genfromtxt(log_file, skip_header=0, delimiter=',', usecols=1)
+    data_mean = np.mean(data_array, dtype=np.float64)
+    return data_mean
 
 
-def writeCattedFile(data, name):
+def cat_logs(arg):
+    # first check if path exists
+    if not os.path.exists(PATH_TO_LOGS):
+        raise Exception('ERROR: cat_logs: incorrect path')
 
-    with open(name, 'a') as log:
-        for line in data:
-            log.write(str(line[0]) + "," + str(line[1]) + "\n")
+    full_log_path = os.path.join(PATH_TO_LOGS, arg)
 
+    # then check if the log file exists
+    if not os.path.exists(full_log_path) and not os.path.isfile(full_log_path):
+        raise Exception('ERROR: cat_logs: log file not found')
 
-def buildPlotCattedTrend(data):
+    print("Log file found. Reading...")
 
-    # convert data list to numpy array with datetime objects
-    timeFormat = "%Y-%m-%d %H:%M:%S.%f"
-    numData = [[datetime.strptime(n[0], timeFormat), float(n[1])] for n in data]
-    datArray = np.array(numData)
+    # calculate the mean value for the whole log
+    log_file_mean = get_log_file_mean(full_log_path)
+    print("Average value for file {} is: {}".format(arg, log_file_mean))
 
-    # plotting individual log files creates discontinuities between x vals, so create one subplot per calendar day
-    # x-values contain date elements: (YYYY, MM, DD, HH, MM, SS, uS). the SS elements will become the plotted values,
-    # the HHMM for x-axis ticks, and the YYYYMMDD for the plot title
-
-    # first define yVals, which will have the same range across all plots
-    yVals = datArray[:, 1]
-    yLims = [min(yVals) * 2, max(yVals) * 2]
-
-    print(datArray)
-
-    # create list of calendar days represented
-    dayFormat = "%Y%m%d"
-    daysInDat = sorted(list(set([dt.strftime(dayFormat) for dt in datArray[:,0]])))
-    print(daysInDat)
-
-    # x-axis should be 24 ticks for one whole day
-    hourFormat = "%H%M"
-    xTicks = [dt.strftime(hourFormat) for dt in datArray[:,0]]
-    print(xTicks)
-
-    # shift Y values by 10MHz, to only plot mHz centered around zero
-    datArray[:,1] -= 10000000
-
-    xVals = [dt.second for dt in datArray[:,0]]
-    # xLims = [min(datArray[:,0]) - timedelta(hours=1), max(datArray[:,0]) + timedelta(hours=1)]
-
-    # print(mdates.date2num(datArray[:,0]))
-
-    # for plot date formatting, reference: http://matplotlib.org/examples/api/date_demo.html
-
-    plt.figure()
-    # first subplot gets the y-axis label
-    plt.subplot(1, 2, 1)
-    plt.ylabel('Deviation from 10MHz [Hz]')
-    plt.scatter(xVals, yVals, color='b', alpha=0.5, marker='s', s=20)
-    plt.gcf().autofmt_xdate()
-
-    # x-axis label will be the date
-    plt.xlabel(str(daysInDat[0]))
-
-    plt.subplot(1, 2, 2)
-    plt.scatter(xVals, yVals, color='b', alpha=0.5, marker='s', s=20)
-    plt.gcf().autofmt_xdate()
-
-    # x-axis label will be the date
-    plt.xlabel(str(daysInDat[1]))
+    # get the date for the file. utcnow() format is '%Y-%m-%d %H:%M:%S.%f'
 
 
+def get_arguments():
+    parser = argparse.ArgumentParser(description=__doc__)
 
-    # plt.xlim(xLims)
-    plt.ylim(yLims)
+    parser.add_argument('-v', '--version', action='store_true', help='Print version')
+    parser.add_argument('-c', '--concatenate', action='store', dest='cat_logs', help='Pass arg after -c switch.')
 
-    plt.show()
-
-
-def showPlot():
-
-    pass
+    return parser.parse_args()
 
 
-if __name__ == main():
-    # main(sys.argv[1:])
-    main()
+if __name__ == '__main__':
+    try:
+        args = get_arguments()
+        main(args)
+
+    except KeyboardInterrupt as e:
+        sys.exit(0)
