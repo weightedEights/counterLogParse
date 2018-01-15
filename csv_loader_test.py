@@ -30,18 +30,18 @@ def main():
     file_list = [x for x in glob.glob("testLog.2016[12]*")]
 
     for f in file_list:
-        print("Working on file: {}...\n".format(f))
-
+        print("Working on file: {}...".format(f))
         working_frame = pd.read_csv(f, skiprows=0, parse_dates=['Time'])
-
-        print(working_frame)
-
+        # print(working_frame)
         new_frame = new_frame.append(working_frame)
+        # print(new_frame)
 
-        print(new_frame)
+    print(new_frame)
 
-        print("\n")
+    # create the unordered set first, then convert to list.ordered()
+    the_days = set(d.day for d in new_frame["Time"])
 
+    print(the_days)
 
 if __name__ == '__main__':
     main()
