@@ -26,7 +26,9 @@ def main():
     pd.options.display.float_format = "{:.7f}".format
     # pd.set_option('precision', 7)
 
-    # create empty data frame to populate, for future this will be a new file to write daily data points
+    # check for existing daily mean/avg log, create if not exist
+
+
     # csv write format: call_df.to_csv('D:/Call.csv', date_format='%Y-%m-%d %H:%M:%S')
     running_frame = pd.DataFrame(columns=['Date', 'CounterAvg'])
 

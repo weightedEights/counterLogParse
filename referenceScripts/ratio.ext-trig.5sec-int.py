@@ -41,7 +41,7 @@ def printHeader():
 
 
 def instConnect(instIP):
-    rm = visa.ResourceManager()
+    rm = visa.ResourceManager('@py')
     inst = rm.open_resource(instIP)
 
     return inst
