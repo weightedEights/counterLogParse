@@ -46,28 +46,28 @@ def append_daily_csv(arg):
     # pd.set_option('precision', 7)
 
     # check for existing daily mean/avg log, create if not exist
-    daily_mean_log = "daily.mean.log.csv"
-
-    with open(daily_mean_log, "w") as log:
-        log.write("Date,CounterMean\n")
+    daily_mean_log = "daily_mean_log.csv"
+    if not os.path.exists(daily_mean_log):
+        with open(daily_mean_log, "w") as log:
+            log.write("Date,CounterMean\n")
 
     file_list = [x for x in glob.glob(os.path.join(arg, "counterLog*"))]
 
-    for f in file_list:
-        print("Working on file: {}...".format(f))
+    with open(daily_mean_log, "a") as log:
+        for f in file_list:
+            print("Working on file: {}...".format(f))
 
-        # sep= resolves the issue of spaces in the column names when importing
-        working_frame = pd.read_csv(f, skiprows=0, names=['datetime', 'counter_val'], parse_dates=['datetime'])
-        print("Working frame: \n{}\n".format(working_frame))
+            # for pandas dataframe, column "names" are defined, else it will use first row data
+            working_frame = pd.read_csv(f, skiprows=0, names=['datetime', 'counter_val'], parse_dates=['datetime'])
+            # print("Working frame: \n{}\n".format(working_frame))
 
-        # get date from frame
-        # get mean from one day of measurements, rounded to 7 sig figs, same as the measurements
-        working_date = working_frame['datetime'][0].date()
-        working_mean = working_frame['counter_val'].mean().round(7)
-        print("Date: {}, Mean: {:.7f}\n".format(working_date, working_mean))
+            # get date from frame
+            # get mean from one day of measurements, rounded to 7 sig figs, same as the measurements
+            working_date = working_frame['datetime'][0].date()
+            working_mean = working_frame['counter_val'].mean().round(7)
+            print("Date: {}, Mean: {:.7f}\n".format(working_date, working_mean))
 
-        # append to csv
-        with open(daily_mean_log, "a") as log:
+            # append to csv
             log.write(str(working_date) + "," + str(working_mean) + "\n")
 
 
