@@ -40,6 +40,9 @@ def main(pargs):
     if pargs.append_daily_csv:
         append_daily_csv(args.append_daily_csv)
 
+    if pargs.plot_daily_mean:
+        plot_daily_mean(args.plot_daily_mean)
+
 
 def append_daily_csv(arg):
     # pd.options.display.float_format = "{:.7f}".format
@@ -71,11 +74,20 @@ def append_daily_csv(arg):
             log.write(str(working_date) + "," + str(working_mean) + "\n")
 
 
+def plot_daily_mean(arg):
+
+    print("Daily mean plotting goes here!")
+    print("Daily mean arg: {}".format(arg))
+
+
 def get_arguments():
     parser = argparse.ArgumentParser(description=__doc__)
 
     parser.add_argument('-v', '--version', action='store_true', help='Print version')
-    parser.add_argument('-a', '--append', action='store', dest='append_daily_csv', help='Path to log files, e.g. "./logs"')
+    parser.add_argument('-a', '--append', action='store', dest='append_daily_csv',
+                        help='Path to log files, e.g. "./logs"')
+    parser.add_argument('-p', '--plot', action='store', dest='plot_daily_mean',
+                        help='Path to daily_mean_log file, default "./"')
 
     return parser.parse_args()
 
