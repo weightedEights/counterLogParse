@@ -21,7 +21,7 @@ import argparse
 import glob
 import pandas as pd
 # from matplotlib import pyplot as plt
-# import seaborn as sns
+import seaborn as sns
 # import numpy as np
 
 
@@ -75,9 +75,24 @@ def append_daily_csv(arg):
 
 
 def plot_daily_mean(arg):
+    """
+    source/guide for plotting:
+    http://www.augustkleimo.com/import-and-plot-stock-price-data-with-python-pandas-and-seaborn/
 
+    http://seaborn.pydata.org/examples/timeseries_from_dataframe.html
+
+    https://zahidhasan.github.io/2017-04-13-ploting-with-seaborn/
+
+    """
     print("Daily mean plotting goes here!")
-    print("Daily mean arg: {}".format(arg))
+    df = pd.read_csv(arg, parse_dates=['Date'])
+
+    print(df.head())
+
+    # df.set_index('Date', inplace=True)
+    # df['CounterMean'].plot()
+
+    sns.tsplot(data=df, time="Date", value="CounterMean")
 
 
 def get_arguments():
