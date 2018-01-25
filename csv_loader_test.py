@@ -86,7 +86,7 @@ def get_arguments():
     parser.add_argument('-v', '--version', action='store_true', help='Print version')
     parser.add_argument('-a', '--append', action='store', dest='append_daily_csv',
                         help='Path to log files, e.g. "./logs"')
-    parser.add_argument('-p', '--plot', action='store', dest='plot_daily_mean',
+    parser.add_argument('-p', '--plot', nargs='?', const='./daily_mean_log.csv', action='store', dest='plot_daily_mean',
                         help='Path to daily_mean_log file, default "./"')
 
     return parser.parse_args()
