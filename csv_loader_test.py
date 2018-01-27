@@ -20,7 +20,7 @@ import argparse
 # from datetime import datetime
 import glob
 import pandas as pd
-# from matplotlib import pyplot as plt
+from matplotlib import pyplot as plt
 import seaborn as sns
 # import numpy as np
 
@@ -92,7 +92,9 @@ def plot_daily_mean(arg):
     # df.set_index('Date', inplace=True)
     # df['CounterMean'].plot()
 
-    sns.tsplot(data=df, time="Date", value="CounterMean")
+    # time series is the wrong plot for this data
+    # sns.tsplot(data=df, time="Date", value="CounterMean", unit="Hz", ci="sd")
+    # plt.show()
 
 
 def get_arguments():
