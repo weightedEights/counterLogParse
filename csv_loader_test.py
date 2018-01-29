@@ -85,7 +85,9 @@ def plot_daily_mean(arg):
 
     """
     print("Daily mean plotting goes here!")
-    df = pd.read_csv(arg, parse_dates=['Date'])
+
+    # index_col must be set to dates for pandas time series methods
+    df = pd.read_csv(arg, parse_dates=['Date'], index_col=['Date'])
 
     print(df.head())
 
