@@ -17,7 +17,7 @@ Load, parse, and plot a single .csv file of counter logger data.
 import os
 import sys
 import argparse
-# from datetime import datetime
+from datetime import datetime
 import glob
 import pandas as pd
 from matplotlib import pyplot as plt
@@ -45,7 +45,7 @@ def main(pargs):
 
 
 def append_daily_csv(arg):
-    # pd.options.display.float_format = "{:.7f}".format
+    pd.options.display.float_format = "{:.7f}".format
     # pd.set_option('precision', 7)
 
     # check for existing daily mean/avg log, create if not exist
@@ -83,13 +83,18 @@ def plot_daily_mean(arg):
 
     https://zahidhasan.github.io/2017-04-13-ploting-with-seaborn/
 
+    https://chrisalbon.com/python/data_wrangling/pandas_time_series_basics/
+
+    http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.plot.html
+
     """
     print("Daily mean plotting goes here!")
 
     # index_col must be set to dates for pandas time series methods
     df = pd.read_csv(arg, parse_dates=['Date'], index_col=['Date'])
 
-    print(df.head())
+    df.resample('M').mean().plot()
+    plt.show()
 
     # df.set_index('Date', inplace=True)
     # df['CounterMean'].plot()
