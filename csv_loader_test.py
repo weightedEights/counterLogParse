@@ -31,6 +31,10 @@ __version__ = "v0.1, 17Jan2018"
 __doc__ = "Counter Logger Log File Utilities"
 
 
+# for choosing what rows to drop from the frame
+OUTLIER_BOUNDARY = 0.5
+
+
 def main(pargs):
     """ docstring description """
 
@@ -96,9 +100,13 @@ def plot_daily_mean(arg):
     df = df.sort_index()
 
     # create new column with 50MHz subtracted, leaving the decimal. units now in Hz.
+    df['Mean_Hz'] = (df.CounterMean - 50000000)
 
+    # remove outlying values, based on OUTLIER_BOUNDARY
+    df = df[df.Mean_Hz < OUTLIER_BOUNDARY]
+    df = df[df.Mean_Hz > -OUTLIER_BOUNDARY]
 
-    df.resample('M').mean().plot()
+    df.resample('D').mean().plot(subplots=True)
     plt.show()
 
 
