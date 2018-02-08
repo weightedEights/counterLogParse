@@ -45,7 +45,7 @@ def main(pargs):
 
 
 def append_daily_csv(arg):
-    pd.options.display.float_format = "{:.7f}".format
+    # pd.options.display.float_format = "{:.7f}".format
     # pd.set_option('precision', 7)
 
     # check for existing daily mean/avg log, create if not exist
@@ -71,7 +71,7 @@ def append_daily_csv(arg):
             print("Date: {}, Mean: {:.7f}\n".format(working_date, working_mean))
 
             # append to csv
-            log.write(str(working_date) + "," + str(working_mean) + "\n")
+            log.write("{},{:.7f}\n".format(working_date, working_mean))
 
 
 def plot_daily_mean(arg):
