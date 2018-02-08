@@ -62,7 +62,6 @@ def append_daily_csv(arg):
 
             # for pandas dataframe, column "names" are defined, else it will use first row data
             working_frame = pd.read_csv(f, skiprows=0, names=['datetime', 'counter_val'], parse_dates=['datetime'])
-            # print("Working frame: \n{}\n".format(working_frame))
 
             # get date from frame
             # get mean from one day of measurements, rounded to 7 sig figs, same as the measurements
@@ -95,13 +94,6 @@ def plot_daily_mean(arg):
 
     df.resample('M').mean().plot()
     plt.show()
-
-    # df.set_index('Date', inplace=True)
-    # df['CounterMean'].plot()
-
-    # time series is the wrong plot for this data
-    # sns.tsplot(data=df, time="Date", value="CounterMean", unit="Hz", ci="sd")
-    # plt.show()
 
 
 def get_arguments():
