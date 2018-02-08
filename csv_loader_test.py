@@ -93,9 +93,33 @@ def plot_daily_mean(arg):
     # df = pd.read_csv(arg, parse_dates=['Date'], index_col=['Date'])
     df = pd.read_csv(arg, parse_dates=['Date'])
     df = df.set_index('Date')
+    df = df.sort_index()
+
+    # create new column with 50MHz subtracted, leaving the decimal. units now in Hz.
+
 
     df.resample('M').mean().plot()
     plt.show()
+
+
+def hampel(vals_orig, k=7, t0=3):
+    """
+    vals: pandas series of values from which to remove outliers
+    k: size of window (including the sample; 7 is equal to 3 on either side of value)
+    """
+    # Make copy so original not edited
+    vals = vals_orig.copy()
+
+    # Hampel Filter
+    l_factor = 1.4826
+    rolling_median = vals.rolling(k).median()
+    difference = np.abs(rolling_median-vals)
+    median_abs_deviation = difference.rolling(k).median()
+    threshold = t0 * l_factor * median_abs_deviation
+    outlier_idx = difference > threshold
+    vals[outlier_idx] = np.nan
+
+    return vals
 
 
 def get_arguments():
