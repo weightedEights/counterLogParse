@@ -22,7 +22,7 @@ import glob
 import pandas as pd
 from matplotlib import pyplot as plt
 import seaborn as sns
-# import numpy as np
+import numpy as np
 
 
 __appname__ = "csv_loader_test.py"
@@ -122,4 +122,5 @@ if __name__ == '__main__':
         main(args)
 
     except KeyboardInterrupt as e:
+        print("User interrupted:\n{}.".format(e.message))
         sys.exit(0)
