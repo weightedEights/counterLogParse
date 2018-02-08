@@ -61,7 +61,7 @@ def append_daily_csv(arg):
             print("Working on file: {}...".format(f))
 
             # for pandas dataframe, column "names" are defined, else it will use first row data
-            working_frame = pd.read_csv(f, skiprows=0, names=['datetime', 'counter_val'], parse_dates=['datetime'])
+            working_frame = pd.read_csv(f, skiprows=1, names=['datetime', 'counter_val'], parse_dates=['datetime'])
 
             # get date from frame
             # get mean from one day of measurements, rounded to 7 sig figs, same as the measurements
@@ -90,7 +90,9 @@ def plot_daily_mean(arg):
     print("Daily mean plotting goes here!")
 
     # index_col must be set to dates for pandas time series methods
-    df = pd.read_csv(arg, parse_dates=['Date'], index_col=['Date'])
+    # df = pd.read_csv(arg, parse_dates=['Date'], index_col=['Date'])
+    df = pd.read_csv(arg, parse_dates=['Date'])
+    df = df.set_index('Date')
 
     df.resample('M').mean().plot()
     plt.show()
